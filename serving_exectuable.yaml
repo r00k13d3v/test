@@ -1,0 +1,31 @@
+apiVersion: ai.sap.com/v1alpha1
+kind: ServingTemplate
+metadata:
+  name: aribot-classifier-1 #Enter a unique name here
+  annotations:
+    scenarios.ai.sap.com/description: "Aribot image classification"
+    scenarios.ai.sap.com/name: "aribot-image-clf"
+    executables.ai.sap.com/description: "Aribot Tensorlfow GPU Serving executable"
+    executables.ai.sap.com/name: "aribot-serve-exectuable"
+  labels:
+    scenarios.ai.sap.com/id: "aribot-clf"
+    ai.sap.com/version: "1.0.0"
+spec:
+  inputs:
+    artifacts:
+      - name: modelArtifact
+  template:
+    apiVersion: "serving.kubeflow.org/v1beta1"
+    metadata:
+      labels: |
+        ai.sap.com/resourcePlan: starter
+    spec: |
+      predictor:
+        imagePullSecrets:
+          - name: docker-registry-secret
+        containers:
+        - name: kfserving-container
+          image: "docker.io/ollama/ollama"
+          ports:
+            - containerPort: 11434
+              protocol: TCP
